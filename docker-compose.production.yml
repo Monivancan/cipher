@@ -15,7 +15,7 @@ services:
       - "3001:3001"  # MCP server port
     environment:
       - NODE_ENV=production
-      - CIPHER_CONFIG_PATH=/app/config/production-config.yml
+      - CONFIG_FILE=/app/memAgent/cipher.yml
       - PORT=3000
       - HOST=0.0.0.0
       # API Configuration
