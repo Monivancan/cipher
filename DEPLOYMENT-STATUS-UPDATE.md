@@ -38,17 +38,48 @@
    - Application not listening on expected port (3000)
    - Reverse proxy misconfiguration
 
-3. **Environment Variables**
-   - Missing `GEMINI_API_KEY`
-   - Missing `SUPABASE_URL` or `SUPABASE_ANON_KEY`
-   - Incorrect `NODE_ENV` setting
+3. **Environment Variables** ✅ NOW AVAILABLE
+   - `GEMINI_API_KEY`: Provided (AIzaSyAs2M1ImrO-LPpuJguiuAKfSYIW_mRphOo)
+   - Database URLs: Configured with Supabase PostgreSQL
+   - Vector store: Configured with pgvector
+   - All required environment variables now available
 
 ## 🔧 Immediate Action Items
 
-### 1. Check Coolify Dashboard (PRIORITY 1)
+### 1. Apply Environment Variables in Coolify (PRIORITY 1)
+**Status:** Environment variables provided by user - need to be configured in Coolify
+
+**Required Environment Variables:**
+```
+SERVICE_FQDN_CIPHER=cipher.craftedbymonish.space
+SERVICE_URL_CIPHER=https://cipher.craftedbymonish.space
+GEMINI_API_KEY=AIzaSyAs2M1ImrO-LPpuJguiuAKfSYIW_mRphOo
+NODE_ENV=development
+CIPHER_LOG_LEVEL=info
+REDACT_SECRETS=true
+CIPHER_PG_URL=postgresql://postgres:wLuCT7fiklmGswfe@db.yfaudsacrjdftfywutvu.supabase.co:5432/postgres
+VECTOR_STORE_TYPE=pgvector
+VECTOR_STORE_URL=postgresql://postgres:wLuCT7fiklmGswfe@db.yfaudsacrjdftfywutvu.supabase.co:5432/postgres
+VECTOR_STORE_COLLECTION=knowledge_memory
+VECTOR_STORE_DIMENSION=768
+VECTOR_STORE_DISTANCE=Cosine
+REFLECTION_VECTOR_STORE_COLLECTION=reflection_memory
+DISABLE_REFLECTION_MEMORY=false
+SEARCH_MEMORY_TYPE=both
+WEB_SEARCH_ENABLE=true
+WEB_SEARCH_ENGINE=duckduckgo
+WEB_SEARCH_SAFETY_MODE=strict
+WEB_SEARCH_MAX_RESULTS=2
+WEB_SEARCH_RATE_LIMIT=10
+EMBEDDING_MODEL=gemini-embedding-001
+MCP_GLOBAL_TIMEOUT=30000
+ENABLE_QUERY_REFINEMENT=true
+```
+
+### 2. Check Coolify Dashboard
 ```
 URL: https://coolify.craftedbymonish.space
-Steps:
+```Steps:
 1. Navigate to Cipher application
 2. Check 'Deployments' tab for build logs
 3. Check 'Logs' tab for runtime errors
