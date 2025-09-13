@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "cipher": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "cipher-mcp-client",
+        "--server-url",
+        "https://your-cipher-deployment.coolify.app"
+      ],
+      "env": {
+        "MCP_SERVER_MODE": "aggregator",
+        "GEMINI_API_KEY": "AIzaSyAs2M1ImrO-LPpuJguiuAKfSYIW_mRphOo",
+        "CIPHER_SERVER_URL": "https://your-cipher-deployment.coolify.app",
+        "NODE_ENV": "production",
+        "CIPHER_LOG_LEVEL": "info"
+      }
+    }
+  }
+}

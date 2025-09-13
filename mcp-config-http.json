@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "cipher-http": {
+      "type": "http",
+      "url": "https://your-cipher-deployment.coolify.app/mcp",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "env": {
+        "GEMINI_API_KEY": "AIzaSyAs2M1ImrO-LPpuJguiuAKfSYIW_mRphOo",
+        "NODE_ENV": "production"
+      }
+    },
+    "cipher-sse": {
+      "type": "sse",
+      "url": "https://your-cipher-deployment.coolify.app/mcp/sse",
+      "headers": {
+        "Accept": "text/event-stream"
+      },
+      "env": {
+        "GEMINI_API_KEY": "AIzaSyAs2M1ImrO-LPpuJguiuAKfSYIW_mRphOo",
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
