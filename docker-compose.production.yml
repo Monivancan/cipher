@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  cipher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_UI: "true"
+        NODE_VERSION: "20"
+    image: cipher-production
+    container_name: cipher-app
+    ports:
+      - "3000:3000"  # Main API server
+      - "3001:3001"  # MCP server port
+    environment:
+      - NODE_ENV=production
+      - CIPHER_CONFIG_PATH=/app/config/production-config.yml
+      - PORT=3000
+      - HOST=0.0.0.0
+      # API Configuration
+      - CIPHER_API_PREFIX=""
+      # MCP Configuration
+      - MCP_SERVER_MODE=default
+      - MCP_TRANSPORT_TYPE=sse
+      # Performance Settings
+      - CIPHER_WAL_FLUSH_INTERVAL=5000
+      - CIPHER_MULTI_BACKEND=1
+    env_file:
+      - .env.production
+    volumes:
+      - cipher_data:/app/.cipher
+      - cipher_logs:/app/logs
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    
+    # Health Check Configuration
+    healthcheck:
+      test: [
+        "CMD", 
+        "sh", 
+        "-c", 
+        "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"
+      ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Resource Limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+    
+    # Logging Configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Security Settings
+    security_opt:
+      - no-new-privileges:true
+    
+    # Network Configuration
+    networks:
+      - cipher-network
+
+# Optional: PostgreSQL Database (if not using external database)
+# Uncomment if you want to run PostgreSQL in the same stack
+#  postgres:
+#    image: postgres:15-alpine
+#    container_name: cipher-postgres
+#    environment:
+#      - POSTGRES_DB=cipher
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+#    ports:
+#      - "5432:5432"
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    networks:
+#      - cipher-network
+
+# Optional: Redis Cache (for enhanced performance)
+#  redis:
+#    image: redis:7-alpine
+#    container_name: cipher-redis
+#    command: redis-server --appendonly yes
+#    volumes:
+#      - redis_data:/data
+#    ports:
+#      - "6379:6379"
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    networks:
+#      - cipher-network
+
+volumes:
+  cipher_data:
+    driver: local
+  cipher_logs:
+    driver: local
+#  postgres_data:
+#    driver: local
+#  redis_data:
+#    driver: local
+
+networks:
+  cipher-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

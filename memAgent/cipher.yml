@@ -8,8 +8,32 @@
 #       - '@modelcontextprotocol/server-filesystem'
 #       - .
 
-# If not specified, please set it like this:
-mcpServers: {}
+# MCP Servers Configuration for Trae IDE integration
+mcpServers:
+  # Trae IDE MCP Server
+  trae:
+    type: stdio
+    command: npx
+    args:
+      - -y
+      - '@trae/mcp-server'
+    env:
+      TRAE_API_KEY: $TRAE_API_KEY
+    enabled: true
+    timeout: 30000
+    connectionMode: lenient
+  
+  # Filesystem MCP Server
+  filesystem:
+    type: stdio
+    command: npx
+    args:
+      - -y
+      - '@modelcontextprotocol/server-filesystem'
+      - .
+    enabled: true
+    timeout: 30000
+    connectionMode: lenient
 
 # Choose ONLY ONE of the following LLM providers
 llm:
@@ -40,9 +64,10 @@ llm:
   # qwenOptions:
   #   enableThinking: false
 
-  provider: deepseek
-  model: deepseek-chat
-  apiKey: $DEEPSEEK_API_KEY
+  # Production LLM Configuration - Gemini
+  provider: gemini
+  model: gemini-2.0-flash-exp
+  apiKey: $GEMINI_API_KEY
   maxIterations: 50
   
 

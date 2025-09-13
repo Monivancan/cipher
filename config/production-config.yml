@@ -1,0 +1,128 @@
+# Production Configuration for Cipher Agent
+# Optimized for Coolify deployment with Trae IDE integration
+
+# MCP Servers Configuration
+# Configure your MCP servers for production use
+mcpServers:
+  # Trae IDE MCP Server (recommended for development workflows)
+  trae:
+    type: stdio
+    command: npx
+    args:
+      - -y
+      - '@trae/mcp-server'
+    env:
+      TRAE_API_KEY: $TRAE_API_KEY
+    enabled: true
+    timeout: 30000
+    connectionMode: lenient
+  
+  # Filesystem MCP Server (for file operations)
+  filesystem:
+    type: stdio
+    command: npx
+    args:
+      - -y
+      - '@modelcontextprotocol/server-filesystem'
+      - /app
+    enabled: true
+    timeout: 30000
+    connectionMode: lenient
+
+# LLM Configuration - Choose ONE provider
+llm:
+  # Gemini Configuration (recommended for production)
+  provider: gemini
+  model: gemini-2.0-flash-exp
+  apiKey: $GEMINI_API_KEY
+  maxIterations: 50
+  
+  # Alternative: OpenAI Configuration
+  # provider: openai
+  # model: gpt-4o-mini
+  # apiKey: $OPENAI_API_KEY
+  # maxIterations: 50
+  
+  # Alternative: Anthropic Configuration
+  # provider: anthropic
+  # model: claude-3-5-haiku-20241022
+  # apiKey: $ANTHROPIC_API_KEY
+  # maxIterations: 50
+
+# Embedding Configuration
+embedding:
+  provider: gemini
+  model: text-embedding-004
+  apiKey: $GEMINI_API_KEY
+  dimension: 768
+
+# Memory Configuration
+memory:
+  # Knowledge Memory Settings
+  knowledge:
+    enabled: true
+    maxEntries: 10000
+    searchLimit: 20
+    
+  # Reflection Memory Settings
+  reflection:
+    enabled: true
+    maxEntries: 5000
+    searchLimit: 10
+    
+  # Vector Store Configuration
+  vectorStore:
+    type: pgvector
+    url: $VECTOR_STORE_URL
+    collection: knowledge_memory
+    dimension: 768
+    distance: Cosine
+
+# Agent Card Configuration
+agentCard:
+  name: "Cipher Production Agent"
+  description: "Memory-powered AI agent for Trae IDE with MCP integration"
+  version: "1.0.0"
+  capabilities:
+    - conversation
+    - memory
+    - tools
+    - mcp
+    - websocket
+    - streaming
+  contact:
+    support: "https://github.com/byterover/cipher"
+
+# Production Optimizations
+production:
+  # Logging Configuration
+  logging:
+    level: info
+    redactSecrets: true
+    
+  # Performance Settings
+  performance:
+    maxConcurrentRequests: 100
+    requestTimeout: 300000  # 5 minutes
+    memoryCleanupInterval: 3600000  # 1 hour
+    
+  # Security Settings
+  security:
+    corsOrigins:
+      - "https://your-trae-domain.com"
+      - "https://your-coolify-domain.com"
+    rateLimitWindowMs: 900000  # 15 minutes
+    rateLimitMaxRequests: 1000
+
+# MCP Server Mode Configuration
+mcpServerMode: default  # or 'aggregator' for hub mode
+
+# Aggregator Configuration (if using aggregator mode)
+# aggregator:
+#   conflictResolution: prefix
+#   timeout: 60000
+#   servers:
+#     - name: trae
+#       prefix: trae_
+#     - name: filesystem
+#       prefix: fs_
