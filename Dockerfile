@@ -14,6 +14,7 @@ RUN apk add --no-cache \
     python3 \
     make \
     g++ \
+    git \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /app
@@ -21,11 +22,12 @@ WORKDIR /app
 # Copy package files first for better caching
 COPY package*.json pnpm-lock.yaml ./
 
-# Install pnpm
-RUN npm install -g pnpm@9.14.0
+# Install pnpm with corepack (more reliable method)
+RUN corepack enable && corepack prepare pnpm@9.14.0 --activate
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Set pnpm store directory and install dependencies
+RUN pnpm config set store-dir /app/.pnpm-store && \
+    pnpm install --frozen-lockfile --prefer-offline
 
 # Copy source and build
 COPY . .
