@@ -20,23 +20,18 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY package*.json pnpm-lock.yaml ./
+COPY package*.json ./
 
-# Install pnpm with corepack (more reliable method)
-RUN corepack enable && corepack prepare pnpm@9.14.0 --activate
-
-# Set pnpm store directory and install dependencies
-RUN pnpm config set store-dir /app/.pnpm-store && \
-    pnpm install --frozen-lockfile --prefer-offline
+# Use npm instead of pnpm for Docker build reliability
+RUN npm ci --only=production=false
 
 # Copy source and build
 COPY . .
 # Use conditional build based on BUILD_UI arg
-RUN if [ "$BUILD_UI" = "true" ]; then pnpm run build; else pnpm run build:no-ui; fi
+RUN if [ "$BUILD_UI" = "true" ]; then npm run build; else npm run build:no-ui; fi
 
 # Clean up and prepare production node_modules
-RUN pnpm prune --prod && \
-    pnpm store prune && \
+RUN npm prune --production && \
     rm -rf /root/.npm /tmp/* /usr/lib/node_modules/npm/man /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html /usr/lib/node_modules/npm/scripts
 
 ################################################################################
